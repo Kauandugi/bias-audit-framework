@@ -17,6 +17,15 @@ The framework operates on a dual-axis auditing pipeline:
 ## 📊 Statistical Rigor
 The pipeline automatically runs non-parametric hypothesis testing (**Mann-Whitney U Test**, $\alpha = 0.05$) to compare control groups (Neutral Prompts) against treatment groups (Inclusive Prompts). Our findings demonstrate that inclusive prompt engineering is often statistically insufficient to overcome ingrained Eurocentric architectural and cultural baselines.
 
+## 🐳 Reproducibility via Docker (MLOps)
+
+To ensure strict scientific reproducibility and avoid dependency conflicts (e.g., Python/TensorFlow versioning), this framework is fully containerized. Any researcher can run the auditing dashboard locally in an isolated environment.
+
+**1. Build the Docker Image:**
+```bash
+docker build -t biasauditfw .
+```
+
 ## 🚀 Repository Structure
 
 * `notebooks/`: Contains the Google Colab environment with the core extraction pipeline.
