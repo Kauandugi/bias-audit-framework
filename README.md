@@ -1,6 +1,6 @@
 # 🔍 BiasAuditFW: Auditing Cultural & Demographic Bias in Generative AI
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bias-audit-framework-5p3qwlbr9hythrweatu4gl.streamlit.app/)
+[![Streamlit App](https://img.shields.io/badge/Open_in_Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bias-audit-framework-5p3qwlbr9hythrweatu4gl.streamlit.app/)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![Computer Vision](https://img.shields.io/badge/Domain-Computer_Vision-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
