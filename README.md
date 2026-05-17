@@ -1,5 +1,6 @@
 # 🔍 BiasAuditFW: Auditing Cultural & Demographic Bias in Generative AI
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bias-audit-framework-5p3qwlbr9hythrweatu4gl.streamlit.app/)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![Computer Vision](https://img.shields.io/badge/Domain-Computer_Vision-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
@@ -24,18 +25,21 @@ To ensure strict scientific reproducibility and avoid dependency conflicts (e.g.
 **1. Build the Docker Image:**
 ```bash
 docker build -t biasauditfw .
+docker run -p 8501:8501 biasauditfw
 ```
+Access the interactive dashboard in your browser at http://localhost:8501.
 
-## 🚀 Repository Structure
+🚀 Repository Structure
+notebooks/: Contains the Google Colab environment with the core extraction pipeline.
 
-* `notebooks/`: Contains the Google Colab environment with the core extraction pipeline.
-* `app.py`: An interactive Streamlit Dashboard for data visualization.
-* `data/`: The validated `.csv` dataset generated during the extraction phase.
-* `docs/`: Academic charts (Seaborn/Matplotlib) ready for publication.
+app.py: An interactive Streamlit Dashboard for data visualization.
 
-## 💻 How to Run the Interactive Dashboard
+data/: The validated .csv dataset generated during the extraction phase.
 
-You can explore the generated data and statistical reports locally using Streamlit:
+docs/: Academic charts (Seaborn/Matplotlib) ready for publication.
+
+💻 How to Run the Dashboard Locally (Without Docker)
+You can explore the generated data and statistical reports locally using standard Python and Streamlit:
 
 ```bash
 # Clone the repository
@@ -47,7 +51,6 @@ pip install -r requirements.txt
 
 # Run the dashboard
 streamlit run app.py
-
 ```
 
 This framework is being developed as a Bachelor's Thesis in Computer Science at the State University of Mato Grosso do Sul (UEMS), expanding upon qualitative research conducted during an academic exchange at the Universidad Nacional de Colombia (UNAL).
