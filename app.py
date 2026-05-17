@@ -19,7 +19,7 @@ st.markdown("Dashboard interativo para análise de vieses demográficos e cultur
 def load_data():
     try:
         # Lê o banco de dados oficial validado
-        df = pd.read_csv('resultados_auditoria_tcc.csv')
+        df = pd.read_csv('data/resultados_auditoria_tcc.csv')
         return df
     except FileNotFoundError:
         st.error("⚠️ Arquivo 'resultados_auditoria_tcc.csv' não encontrado. Verifique se ele está no repositório.")
