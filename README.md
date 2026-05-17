@@ -40,7 +40,7 @@ pip install -r requirements.txt
 streamlit run app.py
 
 ```
-🎓 Academic Context
+
 This framework is being developed as a Bachelor's Thesis in Computer Science at the State University of Mato Grosso do Sul (UEMS), expanding upon qualitative research conducted during an academic exchange at the Universidad Nacional de Colombia (UNAL).
 
 Author: Kauan Henrick Teixeira da Silva
