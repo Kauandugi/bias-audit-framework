@@ -1,0 +1,10 @@
+pandas
+seaborn
+matplotlib
+scipy
+streamlit
+deepface
+transformers
+torch
+torchvision
+Pillow
