@@ -50,7 +50,7 @@ import subprocess
 import sys
 
 REPOSITORY_URL = "https://github.com/Kauandugi/bias-audit-framework.git"
-REPOSITORY_REF = "agent/schema-2-diversity-refactor"
+REPOSITORY_REF = "main"
 REPO_DIR = Path("/content/bias-audit-framework")
 
 if REPO_DIR.exists() and not (REPO_DIR / ".git").is_dir():
