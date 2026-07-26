@@ -1,0 +1,45 @@
+\chapter{Introdução}
+\label{cap:introducao}
+
+Modelos texto-imagem são usados em atividades de comunicação visual e produção de conteúdo. Embora consigam gerar cenas plausíveis, esses sistemas também podem repetir associações presentes nos dados de treinamento. Quando uma cena inclui pessoas, atender ao tema geral do \textit{prompt} não garante diversidade na representação.
+
+Este trabalho analisa imagens sintéticas de ambientes universitários. O foco está em duas dimensões observáveis: diversidade racial percebida e diversidade de apresentação de gênero. A expressão Efeito Patchwork descreve uma hipótese interpretativa para a presença de sinais pontuais de inclusão sem mudança consistente no conjunto das imagens. Essa leitura só será considerada se as avaliações humanas, os escores semânticos e a composição facial apontarem na mesma direção.
+
+\section{Motivação e justificativa}
+
+A pesquisa começou durante um intercâmbio acadêmico na Universidad Nacional de Colombia. Naquele período, um estudo sobre comunicação visual universitária comparou 64 imagens produzidas por DALL-E, Midjourney, Whisk e NanoBanana. Duas pessoas avaliaram diversidade racial, representação de gênero, adequação cultural, representação corporal e qualidade visual. O artigo e os dados foram publicados por \citeonline{HENRICKSILVA2026EXP}.
+
+O TCC retoma o mesmo corpus para investigar quanto dessa avaliação pode ser aproximado por um procedimento computacional verificável. A adequação cultural permanece relevante para explicar a origem do problema, mas não é mais tratada como uma categoria CLIP. A América Latina reúne populações e histórias distintas; uma oposição textual entre ``latino-americano'' e ``não latino-americano'' reduziria essa heterogeneidade a um rótulo visual pouco defensável.
+
+A literatura registra estereótipos demográficos e culturais em modelos texto-imagem \cite{birhane2021, bianchi2023, schneider2025}. Estudos sobre o Sul Global também relatam representações genéricas, combinações inadequadas de referências e baixa fidelidade cultural \cite{mim2024, hall2024, zhang2024cultural}. Nesse contexto, o BiasAuditFW procura tornar explícitas as unidades de análise, os erros do detector e os limites dos classificadores utilizados.
+
+\section{Problema de pesquisa}
+
+O problema é formulado pela seguinte pergunta: \textit{prompts} inclusivos alteram, de forma mensurável, a diversidade racial percebida e a diversidade de apresentação de gênero das imagens, quando comparados a \textit{prompts} neutros?
+
+Há duas hipóteses primárias, uma para cada margem CLIP. Em cada dimensão, a hipótese nula estabelece que não há deslocamento entre as distribuições dos grupos neutro e inclusivo; a hipótese alternativa estabelece que as distribuições diferem. Um resultado com $p \geq 0,05$ será descrito como evidência insuficiente para rejeitar a hipótese nula. Isso não permite concluir que os grupos são iguais.
+
+\section{Objetivos}
+
+O objetivo geral é desenvolver e avaliar um \textit{framework} para análise quantitativa e exploratória de vieses de representação em imagens geradas por IA.
+
+Os objetivos específicos são:
+\begin{itemize}
+    \item organizar o corpus em unidades de imagem e de rosto;
+    \item processar imagens em estruturas de diretório arbitrárias, com metadados fornecidos por manifesto;
+    \item detectar todos os rostos com RetinaFace e registrar as predições do DeepFace;
+    \item calcular duas margens CLIP de diversidade percebida com normalização L2;
+    \item medir o desempenho do detector com Ground Truth humano;
+    \item comparar DeepFace com FairFace como referência secundária;
+    \item comparar \textit{prompts} neutros e inclusivos sem pseudorreplicação.
+\end{itemize}
+
+\section{Classificação e síntese metodológica}
+
+A pesquisa é aplicada, com abordagem quantitativa e objetivo exploratório. O delineamento é comparativo. As imagens são agrupadas por tipo de \textit{prompt} e modelo gerador, mas o estudo não pretende explicar causalmente o funcionamento interno desses modelos.
+
+DeepFace produz dados no nível do rosto; CLIP produz dados no nível da imagem. Mann--Whitney compara os grupos a partir de uma observação por imagem, separadamente para as duas margens. Wilcoxon pareia imagens do mesmo modelo e cenário como análise de sensibilidade.
+
+\section{Organização dos capítulos}
+
+O Capítulo~\ref{cap:revisao} apresenta os trabalhos relacionados. O Capítulo~\ref{cap:metodologia} descreve o corpus, o pipeline, o Ground Truth e os testes. O Capítulo~\ref{cap:resultados} organiza os resultados por unidade de análise. O Capítulo~\ref{cap:conclusao} retoma os objetivos e os limites do estudo.

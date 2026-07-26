@@ -1,0 +1,94 @@
+\chapter{Metodologia}
+\label{cap:metodologia}
+
+\section{Natureza e delineamento da pesquisa}
+
+Esta é uma pesquisa aplicada, de abordagem quantitativa e objetivo exploratório. O delineamento é comparativo. O artefato computacional analisa imagens produzidas sob duas condições de \textit{prompt}, sem buscar relações causais internas aos modelos geradores.
+
+\section{Corpus, manifesto e baseline humana}
+
+O corpus original contém 64 imagens: oito cenários, duas variantes de \textit{prompt} e quatro modelos geradores. As imagens e as avaliações humanas foram produzidas no estudo de \citeonline{HENRICKSILVA2026EXP}. Dois avaliadores atribuíram notas de um a cinco para diversidade racial, representação de gênero, adequação cultural, representação corporal e qualidade visual.
+
+O pipeline também aceita outros conjuntos de imagens. A busca percorre recursivamente o diretório de entrada e não interpreta a posição das pastas. Um manifesto opcional associa o caminho relativo a modelo gerador, tipo de \textit{prompt}, cenário e par comparável. Sem esses metadados, as imagens são processadas, mas os testes inferenciais são ignorados.
+
+Antes da inferência neural, cada arquivo é validado com Pillow. O sistema não segue links simbólicos, não reprocessa o diretório de saída e calcula o SHA-256 do conteúdo. Duplicatas são rejeitadas por padrão. O identificador \texttt{imagem\_id} deriva do identificador do dataset e desse hash, permanecendo estável quando a imagem apenas muda de pasta.
+
+\section{Ambiente e fluxo de execução}
+
+O notebook oficial funciona como orquestrador do pacote \texttt{biasauditfw}. Ele é executado no Google Colab com GPU NVIDIA T4, monta o Google Drive, registra versões e roda os testes determinísticos antes dos modelos neurais. Um teste inicial processa quatro imagens; a execução completa é ativada depois da verificação desses artefatos.
+
+O schema 2.0 possui duas unidades. \texttt{audit\_\allowbreak images.csv} registra uma linha por imagem, com metadados, número de faces e escores CLIP. \texttt{audit\_\allowbreak faces.csv} registra uma linha por rosto, com caixa delimitadora e predições de atributos. Os escores CLIP não aparecem na tabela facial.
+
+\section{Detecção e predição de atributos}
+
+RetinaFace localiza as regiões faciais e DeepFace produz predições de raça e gênero \cite{serengil2026boosted}. O pipeline percorre toda a lista retornada. Uma imagem pode gerar zero, uma ou várias linhas faciais. Quando nenhuma face válida é encontrada, a imagem permanece na tabela de imagens com \texttt{num\_faces = 0}.
+
+As caixas são ordenadas por posição vertical e horizontal antes da atribuição de \texttt{face\_id}. Origens negativas são limitadas a zero e caixas sem largura ou altura são descartadas. As categorias resultantes descrevem sinais visuais percebidos em faces sintéticas. Elas não informam identidade, nacionalidade, ancestralidade, miscigenação ou sexo biológico.
+
+\section{Escores de diversidade com CLIP}
+
+O CLIP recebe a imagem completa e doze frases, distribuídas em quatro famílias. As formulações são mantidas em inglês para corresponder ao código:
+
+\begin{itemize}
+    \item diversidade racial: \textit{a racially diverse group of people}; \textit{people with diverse racial appearances}; \textit{a group with varied skin tones and racialized appearances};
+    \item homogeneidade racial: \textit{a racially homogeneous group of people}; \textit{people with similar racial appearances}; \textit{a group with little variation in racialized appearance};
+    \item diversidade de apresentação de gênero: \textit{a gender-diverse group of people}; \textit{people with diverse gender presentation}; \textit{a group with varied masculine, feminine, and androgynous presentation};
+    \item homogeneidade de apresentação de gênero: \textit{a gender-homogeneous group of people}; \textit{people with similar gender presentation}; \textit{a group with one visually similar gender presentation}.
+\end{itemize}
+
+Seja $\mathcal{A}_k$ o conjunto de frases da família $k$. Cada vetor textual é normalizado pela norma Euclidiana. Em seguida, os vetores da família são promediados e o protótipo resultante é normalizado novamente:
+
+\begin{equation}
+\widehat{\vec{t}}_j =
+\frac{f_T(T_j)}{\lVert f_T(T_j) \rVert_2},
+\qquad
+\vec{p}_k =
+\frac{\frac{1}{|\mathcal{A}_k|}\sum_{T_j \in \mathcal{A}_k}\widehat{\vec{t}}_j}
+{\left\lVert \frac{1}{|\mathcal{A}_k|}\sum_{T_j \in \mathcal{A}_k}\widehat{\vec{t}}_j \right\rVert_2}.
+\end{equation}
+
+O vetor da imagem também é normalizado:
+
+\begin{equation}
+\widehat{\vec{z}}_I =
+\frac{f_I(I)}{\lVert f_I(I) \rVert_2}.
+\end{equation}
+
+A similaridade com um protótipo é o produto escalar entre vetores unitários:
+
+\begin{equation}
+S_C(I,k) = \widehat{\vec{z}}_I \cdot \vec{p}_k.
+\end{equation}
+
+Cada cosseno pertence a $[-1,1]$. As duas margens são calculadas de forma independente:
+
+\begin{align}
+M_r(I) &= S_C(I,D_r) - S_C(I,H_r), \\
+M_g(I) &= S_C(I,D_g) - S_C(I,H_g),
+\end{align}
+
+\noindent em que $D_r$ e $H_r$ representam os protótipos raciais de diversidade e homogeneidade, enquanto $D_g$ e $H_g$ representam os protótipos de apresentação de gênero. Ambas as margens pertencem ao intervalo teórico $[-2,2]$. O método não aplica \textit{softmax}, não combina as margens e não usa CLIP para contar pessoas. Os valores expressam alinhamento semântico com os protótipos e são calculados uma vez por imagem.
+
+\section{Ground Truth da detecção facial}
+
+Dois avaliadores anotam independentemente as caixas faciais em formato COCO. Diferenças de contagem, regiões sem par ou pares com interseção sobre união (IoU) inferior a 0,5 são resolvidos por consenso. As imagens do COCO são associadas por caminho relativo ou por identificador de origem, evitando colisões entre arquivos com o mesmo nome.
+
+As predições de RetinaFace são pareadas às caixas do consenso por correspondência um-para-um. Uma predição é verdadeiro positivo quando $\mathrm{IoU} \geq 0,5$. O relatório inclui precisão, revocação, F1, IoU média, falsos positivos e falsos negativos. Intervalos de confiança são estimados por \textit{bootstrap} no nível da imagem.
+
+\section{Baseline humana e pseudo-oráculo}
+
+As notas R1 e R2 de diversidade racial e representação de gênero são preservadas separadamente. A concordância ordinal é medida pelo kappa ponderado. A média dos avaliadores é correlacionada, por Spearman, com a margem CLIP correspondente.
+
+FairFace é executado nos recortes definidos pelo Ground Truth \cite{karkkainen2021fairface}. As taxonomias são harmonizadas apenas quando há correspondência explícita. A comparação com DeepFace informa acordo, kappa de Cohen, macro-F1 e matriz de confusão. FairFace é uma referência operacional, não um rótulo verdadeiro.
+
+Como evidência convergente secundária, o sistema calcula índices de Simpson normalizados sobre as categorias faciais por imagem. Imagens com menos de dois rostos recebem valor ausente, pois não há diversidade intragrupo observável.
+
+\section{Análise estatística}
+
+Mann--Whitney compara \textit{prompts} inclusivos e neutros separadamente para $M_r$ e $M_g$, com $\alpha = 0,05$. A entrada possui uma linha por imagem. O relatório apresenta tamanhos dos grupos, medianas, intervalos interquartis, estatística U, \textit{p-value} e correlação bisserial de postos. A correção de Holm cobre as duas hipóteses primárias.
+
+Wilcoxon é usado como análise de sensibilidade pareada por modelo e cenário. Comparações exploratórias separadas por modelo recebem outra correção de Holm, aplicada à família completa. Quando $p \geq 0,05$, o texto informa que não há evidência suficiente para rejeitar a hipótese nula.
+
+\section{Reprodutibilidade e artefatos}
+
+O notebook exporta as tabelas canônicas, um relatório de ingestão, metadados da execução, estatísticas e gráficos. Um validador independente confere o schema e recalcula os testes a partir dos CSVs. O Streamlit consome esses arquivos sem executar novamente os modelos neurais e aplica filtros de modelo às duas tabelas por meio de \texttt{imagem\_id}.

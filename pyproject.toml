@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biasauditfw"
+version = "2.0.0"
+description = "Reproducible analysis of perceived diversity in AI-generated images"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "Pillow>=10,<13",
+  "scipy>=1.13,<2",
+  "scikit-learn>=1.4,<2",
+  "statsmodels>=0.14,<1",
+]
+
+[project.optional-dependencies]
+neural = [
+  "deepface==0.0.100",
+  "tf-keras",
+  "torch",
+  "torchvision",
+  "transformers",
+  "opencv-python",
+  "gdown",
+  "tqdm",
+]
+dashboard = ["matplotlib>=3.8,<4", "seaborn>=0.13,<1", "streamlit>=1.40,<2"]
+test = ["nbformat>=5,<6", "pytest>=8,<10", "pytest-cov>=5,<7", "torch"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "gpu: requires neural models and a CUDA runtime",
+  "integration: exercises multiple package modules",
+]
+
+[tool.coverage.run]
+source = ["biasauditfw"]
+omit = ["src/biasauditfw/neural.py"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
