@@ -1,60 +1,140 @@
-# 🔍 BiasAuditFW: Auditing Cultural & Demographic Bias in Generative AI
+# BiasAuditFW
 
-[![Streamlit App](https://img.shields.io/badge/Open_in_Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bias-audit-framework-5p3qwlbr9hythrweatu4gl.streamlit.app/)
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![Computer Vision](https://img.shields.io/badge/Domain-Computer_Vision-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+Framework de pesquisa para análise quantitativa e exploratória de vieses de
+representação em imagens geradas por IA. O projeto é o Trabalho de Conclusão de
+Curso em Ciência da Computação na UEMS e continua uma pesquisa realizada durante
+intercâmbio na Universidad Nacional de Colombia.
 
-BiasAuditFW is an automated, open-source auditing framework designed to quantify representational and cultural biases in text-to-image diffusion models (e.g., Stable Diffusion, Midjourney, DALL-E, NanoBanana). 
+## Pergunta de pesquisa
 
-This project transitions bias auditing from qualitative observation to a rigorous quantitative pipeline, exposing the "Patchwork Effect" and the aesthetic erasure of the Global South in synthetic media.
+Como imagens produzidas por modelos generativos variam entre prompts neutros e
+inclusivos quanto à diversidade racial percebida e à diversidade de apresentação
+de gênero?
 
-## 🧠 Architecture and Methodology
+O sistema analisa aparências em conteúdo sintético. Ele não infere identidade,
+ancestralidade, nacionalidade, miscigenação, sexo biológico ou autenticidade
+cultural.
 
-The framework operates on a dual-axis auditing pipeline:
-1. **Demographic Extraction (DeepFace):** Utilizes the `RetinaFace` backend to extract facial features, transforming unstructured pixel data into categorical variables (Race and Gender) and isolating the algorithmic "default whiteness" and male dominance.
-2. **Zero-Shot Semantic Evaluation (CLIP):** Projects generated images and cultural anchor texts (e.g., *"A typical Latin American university campus"*) into a high-dimensional latent space. By calculating cosine similarity, it mathematically proves whether models possess the cultural competence to depict non-Eurocentric realities.
+## Arquitetura
 
-## 📊 Statistical Rigor
-The pipeline automatically runs non-parametric hypothesis testing (**Mann-Whitney U Test**, $\alpha = 0.05$) to compare control groups (Neutral Prompts) against treatment groups (Inclusive Prompts). Our findings demonstrate that inclusive prompt engineering is often statistically insufficient to overcome ingrained Eurocentric architectural and cultural baselines.
+O notebook oficial orquestra o pacote `src/biasauditfw`:
 
-## 🐳 Reproducibility via Docker (MLOps)
+1. A ingestão encontra imagens recursivamente e valida conteúdo, duplicatas e
+   manifesto.
+2. DeepFace com RetinaFace detecta zero, um ou vários rostos.
+3. CLIP calcula duas margens independentes no nível da imagem.
+4. A estatística usa somente imagens únicas e explicitamente elegíveis.
+5. Ground Truth, baseline humana e FairFace produzem validações complementares.
 
-To ensure strict scientific reproducibility and avoid dependency conflicts (e.g., Python/TensorFlow versioning), this framework is fully containerized. Any researcher can run the auditing dashboard locally in an isolated environment.
-
-**1. Build the Docker Image:**
-```bash
-docker build -t biasauditfw .
-docker run -p 8501:8501 biasauditfw
+```text
+racial_margin = cos(image, racial_diversity) - cos(image, racial_homogeneity)
+gender_margin = cos(image, gender_diversity) - cos(image, gender_homogeneity)
 ```
-Access the interactive dashboard in your browser at http://localhost:8501.
 
-🚀 Repository Structure
-notebooks/: Contains the Google Colab environment with the core extraction pipeline.
+Cada polo CLIP combina três frases. Os vetores das frases são normalizados por
+L2, promediados e normalizados novamente. A imagem também é normalizada por L2.
+As margens medem alinhamento semântico, não contagem ou proporção de pessoas.
 
-app.py: An interactive Streamlit Dashboard for data visualization.
+## Schema 2.0
 
-data/: The validated .csv dataset generated during the extraction phase.
+| Artefato | Unidade | Uso |
+| --- | --- | --- |
+| `audit_images.csv` | uma linha por imagem | CLIP, filtros e estatística |
+| `audit_faces.csv` | uma linha por rosto | caixas e categorias DeepFace |
+| `ingestion_report.csv` | uma linha por candidato | validade e duplicatas |
+| `run_metadata.json` | uma linha por execução | versões e configuração |
+| `inference_status.json` | uma linha por execução | elegibilidade estatística |
 
-docs/: Academic charts (Seaborn/Matplotlib) ready for publication.
+Os outputs anteriores permanecem como legado e não devem sustentar as novas
+conclusões.
 
-💻 How to Run the Dashboard Locally (Without Docker)
-You can explore the generated data and statistical reports locally using standard Python and Streamlit:
+## Datasets e manifesto
+
+A ingestão suporta `.png`, `.jpg`, `.jpeg`, `.webp`, `.bmp`, `.tif` e `.tiff`
+em qualquer profundidade. A estrutura das pastas não é interpretada.
+
+O manifesto é opcional. Quando usado, `relative_path` é obrigatório e estas
+colunas são aceitas:
+
+```text
+source_image_id, modelo_ia, tipo_prompt, prompt_id, pair_id, analysis_eligible
+```
+
+O corpus original usa [data/original_64_manifest.csv](data/original_64_manifest.csv).
+Sem manifesto, as imagens são processadas e recebem estatística descritiva, mas a
+inferência neutro/inclusivo é ignorada com motivo explícito.
+
+## Google Colab com T4
+
+1. Envie ou abra `Framework_Auditoria_Viés_IA_Generativa.ipynb` no Colab.
+2. Selecione uma GPU T4.
+3. Confirme `DATASET_ROOT`, `OUTPUT_ROOT` e `MANIFEST_PATH`.
+4. Execute de cima para baixo com `RUN_FULL = False`.
+5. Valide o smoke test de quatro imagens.
+6. Altere `RUN_FULL = True` e execute novamente a partir da configuração.
+7. Rode o validador final com `--expected-images 64 --require-cuda`.
+
+O notebook grava `smoke/` e `full/` em um diretório schema 2.0 separado.
+
+## Testes locais
 
 ```bash
-# Clone the repository
-git clone [https://github.com/your-username/BiasAuditFW.git](https://github.com/your-username/BiasAuditFW.git)
-cd BiasAuditFW
+python -m pip install -e ".[test]"
+python -m pytest -q --cov=biasauditfw --cov-report=term-missing
+```
 
-# Install dependencies
-pip install -r requirements.txt
+A meta é cobertura mínima de 85% nos módulos não neurais. Os testes cobrem
+ingestão arbitrária, manifesto, 1:N, vetores CLIP, pseudorreplicação,
+Mann–Whitney, Wilcoxon, Holm, Spearman, Simpson, IoU e concordância.
 
-# Run the dashboard
+## Estatística
+
+Mann–Whitney compara as distribuições neutra e inclusiva separadamente para as
+duas margens. Wilcoxon pareado funciona como análise de sensibilidade por
+`pair_id`. A correção de Holm cobre as duas hipóteses primárias e, em família
+separada, as análises por modelo.
+
+Um `p >= 0,05` é descrito como evidência insuficiente para rejeitar H0, não como
+prova de igualdade.
+
+## Validação
+
+- Ground Truth facial: duas anotações humanas, consenso, IoU, precisão,
+  revocação, F1 e bootstrap.
+- Baseline humana: kappa ponderado entre R1/R2 e Spearman com cada margem CLIP.
+- FairFace: pseudo-oráculo aplicado aos recortes do Ground Truth, com
+  concordância, kappa, macro-F1 e matriz de confusão.
+- Simpson: medida convergente secundária sobre categorias faciais; fica ausente
+  quando há menos de dois rostos.
+
+FairFace é uma referência secundária, não uma verdade demográfica.
+
+## Dashboard
+
+```bash
+python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-This framework is being developed as a Bachelor's Thesis in Computer Science at the State University of Mato Grosso do Sul (UEMS), expanding upon qualitative research conducted during an academic exchange at the Universidad Nacional de Colombia (UNAL).
+O Streamlit filtra as duas tabelas pelos mesmos `imagem_id`, separa KPIs de
+imagens e rostos e mostra as duas margens sem replicar CLIP por face.
 
-Author: Kauan Henrick Teixeira da Silva
+## Estrutura
 
-Role: Software Developer | Python & Computer Vision
+```text
+src/biasauditfw/                               # pacote testável
+Framework_Auditoria_Viés_IA_Generativa.ipynb  # orquestrador Colab/T4
+tests/                                         # testes e validador de outputs
+data/original_64_manifest.csv                  # manifesto do corpus original
+app.py                                         # dashboard Streamlit
+Texto_Latex/                                   # texto do TCC
+openspec/                                      # especificação e tarefas
+notebooks/bias_audit_pipeline.ipynb            # referência histórica
+```
+
+## Pesquisa anterior
+
+O corpus e a baseline humana derivam de *Exploring Bias in AI-Generated
+Imagery: A Design-Research Case Study in University Visual Communication*
+(INTED 2026): <https://doi.org/10.21125/inted.2026.2311>.
+

@@ -1,0 +1,34 @@
+\chapter{Trabalhos relacionados}
+\label{cap:revisao}
+
+\section{Viés em modelos texto-imagem}
+
+Modelos generativos aprendem associações visuais a partir de grandes bases multimodais. Essas bases podem conter hierarquias raciais, misoginia e categorias sociais inadequadas \cite{birhane2021}. As imagens geradas, por consequência, podem apresentar maior homogeneidade que os contextos que pretendem representar \cite{bianchi2023}. Filtros de segurança também não eliminam, por si sós, representações desproporcionais \cite{schneider2025}.
+
+No contexto universitário, \citeonline{HENRICKSILVA2026EXP} compararam quatro geradores com uma rubrica humana de diversidade racial, representação de gênero, adequação cultural, representação corporal e qualidade visual. Esse estudo fornece o corpus e a baseline humana desta pesquisa. A etapa computacional não substitui o julgamento dos avaliadores; ela permite examinar quais dimensões apresentam associação com medidas automáticas e onde essa aproximação falha.
+
+\section{Análise quantitativa de representação}
+
+Métricas quantitativas ajudam a repetir comparações entre modelos e condições de geração \cite{viceetal2025}. Ainda assim, ferramentas automáticas podem deixar de captar formas de viés percebidas por pessoas \cite{lyu2025}. Os valores produzidos pelo BiasAuditFW são, portanto, indicadores operacionais. Sua interpretação depende dos erros de detecção, da concordância entre modelos e da baseline humana.
+
+\section{DeepFace, FairFace e categorias demográficas}
+
+DeepFace reúne detectores faciais e modelos de análise de atributos em uma interface Python \cite{serengil2026boosted}. Neste trabalho, RetinaFace localiza as faces e DeepFace retorna categorias de raça e gênero acompanhadas de confiança. Essas saídas descrevem a decisão do classificador sobre uma face sintética. Elas não correspondem à identidade de uma pessoa.
+
+FairFace foi proposto com um conjunto facial mais balanceado entre sete grupos raciais, além de gênero e idade \cite{karkkainen2021fairface}. O modelo atua aqui como pseudo-oráculo, isto é, uma referência secundária para medir concordância com DeepFace. Os dois sistemas possuem taxonomias e vieses próprios; concordância entre eles não constitui Ground Truth demográfico.
+
+O Censo Demográfico brasileiro registra cor ou raça a partir da declaração do informante \cite{ibge2023corraca}. Suas categorias ajudam a contextualizar a diversidade da população, mas não formam uma taxonomia de traços faciais. O pipeline não estima nacionalidade, ancestralidade, miscigenação ou sexo biológico. A expressão ``aparência racializada'' é usada para marcar essa diferença entre percepção visual e identidade social.
+
+\section{CLIP e protótipos textuais}
+
+CLIP projeta imagens e textos em um espaço vetorial compartilhado, o que permite comparar uma imagem com descrições sem treinamento específico para o corpus \cite{radford2021}. O desempenho \textit{zero-shot} é sensível à formulação das frases; o trabalho original usa variações de \textit{prompt} e agregação de classificadores textuais. Por esse motivo, cada conceito do BiasAuditFW é representado por três frases, e não por uma única âncora.
+
+O módulo contrasta diversidade e homogeneidade em duas dimensões: aparência racializada e apresentação de gênero. O resultado é um alinhamento semântico global da imagem. Ele não conta pessoas nem estima proporções. Essa cautela é necessária porque o CLIP original apresenta limitações em tarefas de contagem e composição \cite{paiss2023counting}.
+
+Modelos visão-linguagem também podem herdar vieses dos dados de treinamento \cite{alsahili2025}. A comparação com as notas humanas de diversidade racial e representação de gênero ajuda a verificar se as margens se relacionam com o que os avaliadores perceberam, sem transformar correlação em validade universal.
+
+\section{Sul Global e Efeito Patchwork}
+
+Avaliações geográficas mostram que modelos texto-imagem não representam todos os contextos com a mesma qualidade \cite{hall2024}. No Sul Global, essas ferramentas podem repetir repertórios visuais externos ou combinar referências locais de modo inadequado \cite{mim2024, rege2025, zhang2024cultural}.
+
+A adequação cultural, investigada no artigo anterior, continua sendo o contexto histórico do TCC. No novo pipeline, porém, o Efeito Patchwork é formulado de maneira mais restrita: inclusão visual pontual sem aumento consistente das duas dimensões de diversidade no corpus. A expressão não explica os dados de treinamento nem demonstra causalidade. Ela só será usada na discussão se houver convergência entre CLIP, baseline humana e composição facial.

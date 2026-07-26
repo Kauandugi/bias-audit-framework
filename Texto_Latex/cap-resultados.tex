@@ -1,0 +1,32 @@
+\chapter{Resultados e discussão}
+\label{cap:resultados}
+
+Este capítulo está preparado para receber os artefatos schema 2.0 da execução final no Google Colab. Os resultados anteriores foram preservados como legado, mas não são usados aqui porque pertencem ao antigo eixo semântico. Inserir números antes da nova execução misturaria métodos diferentes.
+
+\section{Cobertura e integridade do corpus}
+
+A análise final informará o número de imagens válidas, duplicatas rejeitadas, erros de leitura, total de faces e proporção de imagens sem detecção. Para o corpus original, o primeiro critério de aceite é obter 64 identificadores únicos. A soma de \texttt{num\_faces} deverá coincidir com o número de linhas de \texttt{audit\_\allowbreak faces.csv}.
+
+\section{Desempenho do detector}
+
+Serão apresentados precisão, revocação, F1, IoU média, falsos positivos e falsos negativos, tanto no conjunto completo quanto por modelo e tipo de \textit{prompt}. Esses valores responderão se RetinaFace localizou as regiões anotadas pelos avaliadores. Um desempenho baixo será reportado como resultado do método, não ocultado por um limiar de aprovação escolhido depois da execução.
+
+\section{Baseline humana e pseudo-oráculo}
+
+O kappa ponderado descreverá a concordância entre R1 e R2 para diversidade racial e representação de gênero. Cada média humana será correlacionada com sua margem CLIP por Spearman. A concordância entre DeepFace e FairFace será apresentada separadamente para raça e gênero, sem ser interpretada como acurácia de identidade.
+
+\section{Composição facial}
+
+As distribuições de categorias raciais e de gênero serão calculadas a partir de \texttt{audit\_\allowbreak faces.csv}. Tabelas e gráficos indicarão que a unidade observacional é o rosto detectado. Os índices de Simpson servirão apenas como evidência complementar e permanecerão ausentes em imagens com menos de duas faces.
+
+\section{Diversidade semântica no nível da imagem}
+
+Os quatro cossenos e as duas margens serão descritos por tipo de \textit{prompt} e modelo. A unidade observacional será a imagem. A relação com a baseline humana ajudará a avaliar a validade convergente de cada dimensão; correlação fraca ou ausente limitará a interpretação dos escores CLIP.
+
+\section{Comparação entre prompts}
+
+Para cada margem, o resultado principal apresentará U, \textit{p-value}, \textit{p-value} corrigido por Holm, tamanho dos grupos, medianas, intervalos interquartis e correlação bisserial de postos. Se $p \geq 0,05$, será usada a formulação ``não se rejeita H0''. Wilcoxon e as comparações por modelo serão discutidos como análises complementares, sem substituir o resultado primário.
+
+\section{Efeito Patchwork e ameaças à validade}
+
+O Efeito Patchwork somente será discutido se houver inclusão visual pontual sem aumento consistente das margens e se esse padrão também aparecer na baseline humana e na composição facial. A interpretação deverá considerar o tamanho do corpus, a formulação dos protótipos, as limitações de contagem do CLIP, cenas com várias pessoas, erros de detecção, divergência entre classificadores e subjetividade das avaliações humanas.
