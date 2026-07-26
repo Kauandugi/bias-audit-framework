@@ -3,7 +3,7 @@
 from .config import DatasetConfig
 from .contracts import FACE_COLUMNS, IMAGE_COLUMNS, SCHEMA_VERSION, validate_contract
 from .ingestion import DatasetDiscovery, discover_dataset
-from .pipeline import export_results, process_dataset
+from .pipeline import export_results, process_dataset, select_smoke_inventory
 
 __all__ = [
     "DatasetConfig",
@@ -14,5 +14,6 @@ __all__ = [
     "discover_dataset",
     "export_results",
     "process_dataset",
+    "select_smoke_inventory",
     "validate_contract",
 ]

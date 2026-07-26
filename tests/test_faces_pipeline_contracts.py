@@ -11,7 +11,11 @@ import pytest
 from biasauditfw.clip_diversity import CLIP_OUTPUT_COLUMNS
 from biasauditfw.contracts import FACE_COLUMNS, IMAGE_COLUMNS, validate_contract
 from biasauditfw.faces import analyze_faces, normalize_deepface_results
-from biasauditfw.pipeline import export_results, process_dataset
+from biasauditfw.pipeline import (
+    export_results,
+    process_dataset,
+    select_smoke_inventory,
+)
 from conftest import make_image
 
 
@@ -138,6 +142,34 @@ def test_pipeline_preserves_1_to_n_and_clip_only_at_image_level(
     assert len(faces) == 2
     assert not any(column.startswith("clip_") for column in faces)
     validate_contract(images, faces, expected_images=2)
+
+
+def test_smoke_selection_uses_balanced_pairs_across_models() -> None:
+    rows = []
+    for model in ("Model A", "Model B", "Model C"):
+        for prompt_id in ("P1", "P2"):
+            pair_id = f"{model}-{prompt_id}"
+            for prompt_type in ("Neutral Prompts", "Inclusive Prompts"):
+                rows.append(
+                    {
+                        "analysis_eligible": True,
+                        "modelo_ia": model,
+                        "pair_id": pair_id,
+                        "tipo_prompt": prompt_type,
+                        "caminho_relativo": (
+                            f"{model}/{prompt_type}/{prompt_id}.png"
+                        ),
+                    }
+                )
+    selected = select_smoke_inventory(pd.DataFrame(rows), max_images=4)
+
+    assert len(selected) == 4
+    assert selected["modelo_ia"].nunique() == 2
+    assert set(selected["tipo_prompt"]) == {
+        "Neutral Prompts",
+        "Inclusive Prompts",
+    }
+    assert selected.groupby("pair_id").size().eq(2).all()
 
 
 def test_pipeline_records_clip_errors_and_rejects_missing_scores(tmp_path: Path) -> None:

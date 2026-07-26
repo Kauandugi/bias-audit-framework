@@ -58,6 +58,7 @@ def validate_outputs(
     output_dir: Path,
     expected_images: int | None = None,
     require_cuda: bool = False,
+    require_inference: bool = False,
 ) -> dict[str, Any]:
     existing = {path.name for path in output_dir.iterdir() if path.is_file()}
     missing = REQUIRED_FILES - existing
@@ -71,6 +72,11 @@ def validate_outputs(
     inference = json.loads(
         (output_dir / "inference_status.json").read_text(encoding="utf-8")
     )
+    if require_inference:
+        require(
+            inference.get("eligible") is True,
+            f"Inferential reports were required: {inference.get('reason')}",
+        )
 
     validate_contract(images, faces, expected_images)
     require(metadata.get("schema_version") == "2.0", "Unexpected schema version")
@@ -129,11 +135,13 @@ def main() -> None:
     parser.add_argument("output_dir", type=Path)
     parser.add_argument("--expected-images", type=int)
     parser.add_argument("--require-cuda", action="store_true")
+    parser.add_argument("--require-inference", action="store_true")
     args = parser.parse_args()
     summary = validate_outputs(
         args.output_dir,
         expected_images=args.expected_images,
         require_cuda=args.require_cuda,
+        require_inference=args.require_inference,
     )
     print("Validation passed:", json.dumps(summary, ensure_ascii=False))
 

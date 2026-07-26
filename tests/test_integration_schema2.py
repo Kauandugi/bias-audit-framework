@@ -99,6 +99,7 @@ def test_arbitrary_directory_to_validated_schema2_outputs(tmp_path: Path) -> Non
             str(config.output_dir),
             "--expected-images",
             "2",
+            "--require-inference",
         ],
         check=False,
         capture_output=True,
@@ -106,4 +107,3 @@ def test_arbitrary_directory_to_validated_schema2_outputs(tmp_path: Path) -> Non
     )
     assert result.returncode == 0, result.stderr
     assert '"images": 2' in result.stdout
-

@@ -44,7 +44,7 @@ markers = [
 
 [tool.coverage.run]
 source = ["biasauditfw"]
-omit = ["src/biasauditfw/neural.py"]
+omit = ["*/src/biasauditfw/neural.py"]
 
 [tool.coverage.report]
 fail_under = 85

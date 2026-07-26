@@ -205,7 +205,21 @@ normalização vetorial, estatística, IoU, Ground Truth e pseudo-oráculo simul
     ),
     code(
         """
-!python -m pytest -q {REPO_DIR / "tests"} -m "not gpu" --cov=biasauditfw --cov-report=term
+subprocess.run(
+    [
+        sys.executable,
+        "-m",
+        "pytest",
+        "-q",
+        "tests",
+        "-m",
+        "not gpu",
+        "--cov=biasauditfw",
+        "--cov-report=term",
+    ],
+    cwd=REPO_DIR,
+    check=True,
+)
 """
     ),
     markdown(
@@ -249,21 +263,37 @@ os artefatos, altere para `True` e execute novamente a partir da configuração.
 import importlib.metadata as package_metadata
 import platform
 
-from biasauditfw import export_results, process_dataset, validate_contract
+from biasauditfw import (
+    export_results,
+    process_dataset,
+    select_smoke_inventory,
+    validate_contract,
+)
 
-limit = None if RUN_FULL else CONFIG.smoke_images
+run_inventory = (
+    inventory
+    if RUN_FULL
+    else select_smoke_inventory(inventory, CONFIG.smoke_images)
+)
+print("Imagens selecionadas para esta execução:")
+display(
+    run_inventory[
+        ["source_image_id", "pair_id", "tipo_prompt", "modelo_ia"]
+    ]
+)
 audit_images, audit_faces = process_dataset(
-    inventory,
+    run_inventory,
     face_analyzer=face_analyzer,
     semantic_scorer=clip_scorer,
-    max_images=limit,
 )
-expected_for_run = EXPECTED_IMAGES if RUN_FULL else min(CONFIG.smoke_images, len(inventory))
+expected_for_run = EXPECTED_IMAGES if RUN_FULL else len(run_inventory)
 validate_contract(audit_images, audit_faces, expected_for_run)
 
 RUN_METADATA = {
     "dataset_id": DATASET_ID,
     "run_mode": "full" if RUN_FULL else "smoke",
+    "repository_ref": REPOSITORY_REF,
+    "repository_commit": REPOSITORY_COMMIT,
     "python_version": platform.python_version(),
     "torch_version": torch.__version__,
     "transformers_version": package_metadata.version("transformers"),
@@ -481,10 +511,18 @@ Na execução completa do corpus original, use `--expected-images 64
     ),
     code(
         """
-validator_args = f'"{RUN_OUTPUT}" --expected-images {expected_for_run}'
+validator_command = [
+    sys.executable,
+    str(REPO_DIR / "tests" / "validate_full_outputs.py"),
+    str(RUN_OUTPUT),
+    "--expected-images",
+    str(expected_for_run),
+]
 if RUN_FULL:
-    validator_args += " --require-cuda"
-!python {REPO_DIR / "tests" / "validate_full_outputs.py"} {validator_args}
+    validator_command.append("--require-cuda")
+if MANIFEST_PATH is not None:
+    validator_command.append("--require-inference")
+subprocess.run(validator_command, cwd=REPO_DIR, check=True)
 """
     ),
     markdown(

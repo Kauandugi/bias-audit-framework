@@ -18,6 +18,73 @@ FaceAnalyzer = Callable[[Path], tuple[list[dict[str, Any]], str, str | None]]
 SemanticScorer = Callable[[Path], dict[str, float]]
 
 
+def select_smoke_inventory(
+    inventory: pd.DataFrame,
+    max_images: int,
+) -> pd.DataFrame:
+    """Select deterministic neutral/inclusive pairs across available models."""
+
+    if max_images <= 0:
+        return inventory.iloc[:0].copy()
+    if max_images >= len(inventory):
+        return inventory.copy()
+
+    required = {
+        "analysis_eligible",
+        "modelo_ia",
+        "pair_id",
+        "tipo_prompt",
+        "caminho_relativo",
+    }
+    if not required.issubset(inventory.columns) or max_images < 2:
+        return inventory.iloc[:max_images].copy()
+
+    candidates = inventory.loc[
+        inventory["analysis_eligible"].fillna(False)
+        & inventory["modelo_ia"].notna()
+        & inventory["pair_id"].notna()
+        & inventory["tipo_prompt"].notna()
+    ].copy()
+    prompt_text = candidates["tipo_prompt"].astype(str).str.casefold()
+    candidates["_prompt_kind"] = pd.NA
+    candidates.loc[prompt_text.str.contains("neutral"), "_prompt_kind"] = "neutral"
+    candidates.loc[prompt_text.str.contains("inclusive"), "_prompt_kind"] = "inclusive"
+    candidates = candidates.dropna(subset=["_prompt_kind"])
+
+    blocks_by_model: dict[str, list[list[Any]]] = {}
+    grouped = candidates.groupby(["modelo_ia", "pair_id"], sort=True)
+    for (model, _), group in grouped:
+        ordered = group.sort_values("caminho_relativo", kind="stable")
+        neutral = ordered.loc[ordered["_prompt_kind"] == "neutral"]
+        inclusive = ordered.loc[ordered["_prompt_kind"] == "inclusive"]
+        if neutral.empty or inclusive.empty:
+            continue
+        blocks_by_model.setdefault(str(model), []).append(
+            [neutral.index[0], inclusive.index[0]]
+        )
+
+    selected: list[Any] = []
+    pair_budget = max_images // 2
+    models = sorted(blocks_by_model)
+    while pair_budget > 0 and any(blocks_by_model[model] for model in models):
+        for model in models:
+            if pair_budget == 0:
+                break
+            if blocks_by_model[model]:
+                selected.extend(blocks_by_model[model].pop(0))
+                pair_budget -= 1
+
+    if not selected:
+        return inventory.iloc[:max_images].copy()
+
+    for index in inventory.index:
+        if len(selected) >= max_images:
+            break
+        if index not in selected:
+            selected.append(index)
+    return inventory.loc[selected[:max_images]].copy()
+
+
 def process_dataset(
     inventory: pd.DataFrame,
     face_analyzer: FaceAnalyzer,
