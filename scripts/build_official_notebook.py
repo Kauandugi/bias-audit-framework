@@ -94,6 +94,10 @@ subprocess.run(
     check=True,
 )
 
+PACKAGE_SRC = str(REPO_DIR / "src")
+if PACKAGE_SRC not in sys.path:
+    sys.path.insert(0, PACKAGE_SRC)
+
 import biasauditfw
 from biasauditfw import SCHEMA_VERSION
 
