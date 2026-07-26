@@ -77,13 +77,17 @@ REPOSITORY_COMMIT = subprocess.check_output(
     ["git", "-C", str(REPO_DIR), "rev-parse", "HEAD"],
     text=True,
 ).strip()
+if not (REPO_DIR / "pyproject.toml").is_file():
+    raise RuntimeError(
+        f"A revisão {REPOSITORY_COMMIT} não contém pyproject.toml. "
+        f"Verifique REPOSITORY_REF={REPOSITORY_REF!r}."
+    )
 subprocess.run(
     [
         sys.executable,
         "-m",
         "pip",
         "install",
-        "--quiet",
         "--editable",
         f"{REPO_DIR}[neural,dashboard,test]",
     ],

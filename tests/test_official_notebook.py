@@ -22,6 +22,7 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
     assert 'REPOSITORY_REF = "agent/schema-2-diversity-refactor"' in text
     assert '"checkout", "--quiet", "--force", "FETCH_HEAD"' in text
     assert '"rev-parse", "HEAD"' in text
+    assert '(REPO_DIR / "pyproject.toml").is_file()' in text
     assert "import biasauditfw" in text
     assert "BiasAuditFW schema {SCHEMA_VERSION}" in text
     assert "clip_latin_american" not in text
