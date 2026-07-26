@@ -19,6 +19,11 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
     assert "ClipDiversityScorer" in text
     assert "discover_dataset(CONFIG)" in text
     assert "validate_full_outputs.py" in text
+    assert 'REPOSITORY_REF = "agent/schema-2-diversity-refactor"' in text
+    assert '"checkout", "--quiet", "--force", "FETCH_HEAD"' in text
+    assert '"rev-parse", "HEAD"' in text
+    assert "import biasauditfw" in text
+    assert "BiasAuditFW schema {SCHEMA_VERSION}" in text
     assert "clip_latin_american" not in text
     assert "clip_not_latin_american" not in text
     assert "results[0]" not in text
@@ -27,4 +32,3 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
         if cell["cell_type"] == "code":
             assert cell["execution_count"] is None
             assert cell["outputs"] == []
-

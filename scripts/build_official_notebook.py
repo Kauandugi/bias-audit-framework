@@ -46,17 +46,55 @@ evitar cópias divergentes das funções.
     code(
         """
 from pathlib import Path
-import os
+import subprocess
+import sys
 
 REPOSITORY_URL = "https://github.com/Kauandugi/bias-audit-framework.git"
+REPOSITORY_REF = "agent/schema-2-diversity-refactor"
 REPO_DIR = Path("/content/bias-audit-framework")
 
-if not REPO_DIR.exists():
-    !git clone -q {REPOSITORY_URL} {REPO_DIR}
-else:
-    print(f"Repositório já disponível em {REPO_DIR}; nenhuma atualização automática foi feita.")
+if REPO_DIR.exists() and not (REPO_DIR / ".git").is_dir():
+    raise RuntimeError(
+        f"{REPO_DIR} existe, mas não é um clone Git. "
+        "Remova ou renomeie esse diretório e execute a célula novamente."
+    )
 
-%pip install -q -e "{REPO_DIR}[neural,dashboard,test]"
+if not REPO_DIR.exists():
+    subprocess.run(
+        ["git", "clone", "--quiet", "--no-checkout", REPOSITORY_URL, str(REPO_DIR)],
+        check=True,
+    )
+
+subprocess.run(
+    ["git", "-C", str(REPO_DIR), "fetch", "--quiet", "--depth", "1", "origin", REPOSITORY_REF],
+    check=True,
+)
+subprocess.run(
+    ["git", "-C", str(REPO_DIR), "checkout", "--quiet", "--force", "FETCH_HEAD"],
+    check=True,
+)
+REPOSITORY_COMMIT = subprocess.check_output(
+    ["git", "-C", str(REPO_DIR), "rev-parse", "HEAD"],
+    text=True,
+).strip()
+subprocess.run(
+    [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "--quiet",
+        "--editable",
+        f"{REPO_DIR}[neural,dashboard,test]",
+    ],
+    check=True,
+)
+
+import biasauditfw
+from biasauditfw import SCHEMA_VERSION
+
+print(f"Revisão do repositório: {REPOSITORY_COMMIT}")
+print(f"BiasAuditFW schema {SCHEMA_VERSION} carregado de {biasauditfw.__file__}")
 """
     ),
     code(
