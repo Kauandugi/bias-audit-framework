@@ -85,6 +85,7 @@ instalação e autenticação descritas em
 
 ```powershell
 .\tools\colab.ps1 doctor
+.\tools\colab.ps1 repair-cli
 .\tools\colab.ps1 auth
 .\tools\colab.ps1 gpu-probe
 .\tools\colab.ps1 start

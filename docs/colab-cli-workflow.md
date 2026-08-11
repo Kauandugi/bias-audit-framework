@@ -36,6 +36,18 @@ source "$HOME/.local/bin/env"
 uv tool install google-colab-cli
 ```
 
+A versão `0.6.0` publicada no PyPI pode resolver uma distribuição incompatível
+de `jupyter-kernel-client`. O projeto oficial do Google usa a dependência a
+partir do próprio repositório. Execute o reparo versionado pelo wrapper:
+
+```powershell
+.\tools\colab.ps1 repair-cli
+.\tools\colab.ps1 doctor
+```
+
+O `doctor` deve terminar com `Kernel client: OK`. A revisão usada pelo wrapper
+é fixa para que duas instalações recuperem a mesma implementação.
+
 As credenciais ficam em `~/.config/colab-cli/` dentro do WSL. Esse diretório
 nunca deve ser copiado para o repositório.
 
@@ -49,7 +61,8 @@ Execute no PowerShell:
 ```
 
 O comando `auth` imprime uma URL. Entre com a mesma conta usada no Colab, copie
-o código de autorização e cole no terminal.
+o código OAuth completo exibido na página final e cole no terminal. Um código
+de seis dígitos da autenticação em duas etapas não é o código OAuth.
 
 ## Teste T4
 

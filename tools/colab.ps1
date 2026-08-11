@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("doctor", "auth", "gpu-probe", "start", "mount-drive", "status", "smoke", "full", "stop")]
+    [ValidateSet("doctor", "repair-cli", "auth", "gpu-probe", "start", "mount-drive", "status", "smoke", "full", "stop")]
     [string]$Command = "doctor",
 
     [string]$Distro = "Ubuntu-24.04",
@@ -14,6 +14,7 @@ $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Notebook = Join-Path $RepoRoot "Framework_Auditoria_Viés_IA_Generativa.ipynb"
 $Probe = Join-Path $RepoRoot "scripts\colab_gpu_probe.py"
 $ArtifactRoot = Join-Path $RepoRoot "execucao\colab"
+$KernelClientCommit = "f18e982c3265df5e923aa9def101ab3fd737e139"
 
 function Invoke-WslShell {
     param(
@@ -32,11 +33,14 @@ function Invoke-WslShell {
 function Convert-ToWslPath {
     param([Parameter(Mandatory = $true)][string]$WindowsPath)
 
-    $result = & wsl.exe -d $Distro -- wslpath -a $WindowsPath
-    if ($LASTEXITCODE -ne 0) {
-        throw "Could not translate path to WSL: $WindowsPath"
+    $resolved = (Resolve-Path -LiteralPath $WindowsPath).Path
+    if ($resolved -notmatch '^([A-Za-z]):\\(.*)$') {
+        throw "Only local Windows drive paths can be translated to WSL: $resolved"
     }
-    return ($result | Select-Object -Last 1).Trim()
+
+    $drive = $Matches[1].ToLowerInvariant()
+    $relative = $Matches[2].Replace('\', '/')
+    return "/mnt/$drive/$relative"
 }
 
 function Invoke-Colab {
@@ -47,6 +51,25 @@ function Invoke-Colab {
 
     $script = 'export PATH="$HOME/.local/bin:$PATH"; colab --auth=oauth2 ' + $Arguments
     Invoke-WslShell -Script $script -AllowFailure:$AllowFailure
+}
+
+function Repair-ColabCli {
+    $python = '/home/kauandugi/.local/share/uv/tools/google-colab-cli/bin/python'
+    $dependency = "jupyter-kernel-client @ git+https://github.com/googlecolab/jupyter-kernel-client.git@$KernelClientCommit"
+    & wsl.exe -d $Distro -- /home/kauandugi/.local/bin/uv pip install `
+        --python $python --reinstall $dependency
+    if ($LASTEXITCODE -ne 0) {
+        throw "Could not repair the Colab CLI kernel dependency."
+    }
+}
+
+function Test-ColabKernelClient {
+    $python = '/home/kauandugi/.local/share/uv/tools/google-colab-cli/bin/python'
+    $check = 'import jupyter_kernel_client as j; assert hasattr(j, "KernelClient"), "Run tools/colab.ps1 repair-cli"; print("Kernel client: OK")'
+    & wsl.exe -d $Distro -- $python -c $check
+    if ($LASTEXITCODE -ne 0) {
+        throw "The Colab CLI kernel dependency is incompatible."
+    }
 }
 
 function Stop-ColabSession {
@@ -101,6 +124,10 @@ print("BiasAuditFW environment configured:", {
 switch ($Command) {
     "doctor" {
         Invoke-WslShell -Script 'set -e; printf "Python: "; python3 --version; printf "uv: "; uv --version; printf "Colab CLI: "; colab version'
+        Test-ColabKernelClient
+    }
+    "repair-cli" {
+        Repair-ColabCli
     }
     "auth" {
         Invoke-Colab -Arguments "sessions"
