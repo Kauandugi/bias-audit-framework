@@ -94,9 +94,18 @@ def mann_whitney_reports(
         neutral = data.loc[data["grupo"] == "neutral", metric].dropna()
         if inclusive.empty or neutral.empty:
             raise ValueError(f"Both groups require values for {metric}")
-        statistic, p_value = mannwhitneyu(
-            inclusive, neutral, alternative="two-sided"
-        )
+        combined = pd.concat([inclusive, neutral], ignore_index=True)
+        if combined.nunique(dropna=True) == 1:
+            # Some SciPy releases return NaN when every rank is tied. In this
+            # degenerate null case, U is centered and the two-sided p-value is 1.
+            statistic = len(inclusive) * len(neutral) / 2.0
+            p_value = 1.0
+        else:
+            statistic, p_value = mannwhitneyu(
+                inclusive, neutral, alternative="two-sided"
+            )
+        if not np.isfinite(statistic) or not np.isfinite(p_value):
+            raise ValueError(f"Mann-Whitney is undefined for {metric}")
         rows.append(
             {
                 "metric": metric,
