@@ -30,7 +30,7 @@
 - [x] 4.2 Adicionar preflight, testes, cache de modelos, smoke e full.
 - [x] 4.3 Exportar schema 2.0 em diretório separado dos resultados legados.
 - [x] 4.4 Criar validador independente que recalcula os testes.
-- [ ] 4.5 Executar smoke test real de quatro imagens no Colab T4.
+- [x] 4.5 Executar smoke test real de quatro imagens no Colab T4.
 - [ ] 4.6 Executar as 64 imagens com o manifesto e validar 32 observações por grupo.
 - [ ] 4.7 Executar um segundo dataset sem pressupor estrutura de pastas.
 

@@ -27,6 +27,8 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
     assert 'RUN_FULL = env_flag("BIASAUDIT_RUN_FULL")' in text
     assert '"BIASAUDIT_DATASET_ROOT"' in text
     assert '"BIASAUDIT_OUTPUT_ROOT"' in text
+    assert 'Path("/content/drive/MyDrive").is_dir()' in text
+    assert 'Google Drive já está montado' in text
     assert '"checkout", "--quiet", "--force", "FETCH_HEAD"' in text
     assert '"rev-parse", "HEAD"' in text
     assert '(REPO_DIR / "pyproject.toml").is_file()' in text
