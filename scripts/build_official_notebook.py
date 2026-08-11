@@ -120,9 +120,14 @@ print(f"BiasAuditFW schema {SCHEMA_VERSION} carregado de {biasauditfw.__file__}"
     ),
     code(
         """
-from google.colab import drive
+from pathlib import Path
 
-drive.mount("/content/drive")
+if Path("/content/drive/MyDrive").is_dir():
+    print("Google Drive já está montado em /content/drive.")
+else:
+    from google.colab import drive
+
+    drive.mount("/content/drive")
 """
     ),
     markdown(

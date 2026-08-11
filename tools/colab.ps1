@@ -33,7 +33,7 @@ function Invoke-WslShell {
 function Convert-ToWslPath {
     param([Parameter(Mandatory = $true)][string]$WindowsPath)
 
-    $resolved = (Resolve-Path -LiteralPath $WindowsPath).Path
+    $resolved = [System.IO.Path]::GetFullPath($WindowsPath)
     if ($resolved -notmatch '^([A-Za-z]):\\(.*)$') {
         throw "Only local Windows drive paths can be translated to WSL: $resolved"
     }
