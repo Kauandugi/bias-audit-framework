@@ -76,6 +76,26 @@ inferência neutro/inclusivo é ignorada com motivo explícito.
 
 O notebook grava `smoke/` e `full/` em um diretório schema 2.0 separado.
 
+### Execução automatizada pelo Colab CLI
+
+
+No Windows, o CLI oficial é executado pelo Ubuntu 24.04 no WSL. Depois da
+instalação e autenticação descritas em
+[docs/colab-cli-workflow.md](docs/colab-cli-workflow.md), use:
+
+```powershell
+.\tools\colab.ps1 doctor
+.\tools\colab.ps1 auth
+.\tools\colab.ps1 gpu-probe
+.\tools\colab.ps1 start
+.\tools\colab.ps1 mount-drive
+.\tools\colab.ps1 smoke
+```
+
+Substitua `smoke` por `full` somente após validar a execução reduzida. O wrapper
+registra notebook e logs em `execucao/colab/` e encerra a sessão ao terminar ou
+quando ocorre uma falha.
+
 ## Testes locais
 
 ```bash
@@ -137,4 +157,3 @@ notebooks/bias_audit_pipeline.ipynb            # referência histórica
 O corpus e a baseline humana derivam de *Exploring Bias in AI-Generated
 Imagery: A Design-Research Case Study in University Visual Communication*
 (INTED 2026): <https://doi.org/10.21125/inted.2026.2311>.
-

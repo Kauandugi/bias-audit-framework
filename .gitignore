@@ -219,3 +219,7 @@ __marimo__/
 
 # Local PDF review renders
 Texto_Latex/.preview/
+
+# Local Colab CLI execution artifacts and credentials
+execucao/colab/
+.colab-cli/
