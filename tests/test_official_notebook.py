@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import nbformat
@@ -22,7 +23,10 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
     assert '"repository_commit": REPOSITORY_COMMIT' in text
     assert "validate_full_outputs.py" in text
     assert 'validator_command.append("--require-inference")' in text
-    assert 'REPOSITORY_REF = "agent/schema-2-diversity-refactor"' in text
+    assert '"BIASAUDIT_REPOSITORY_REF", "agent/schema-2-diversity-refactor"' in text
+    assert 'RUN_FULL = env_flag("BIASAUDIT_RUN_FULL")' in text
+    assert '"BIASAUDIT_DATASET_ROOT"' in text
+    assert '"BIASAUDIT_OUTPUT_ROOT"' in text
     assert '"checkout", "--quiet", "--force", "FETCH_HEAD"' in text
     assert '"rev-parse", "HEAD"' in text
     assert '(REPO_DIR / "pyproject.toml").is_file()' in text
@@ -35,6 +39,9 @@ def test_official_notebook_is_clean_schema_2_orchestrator() -> None:
     assert "results[0]" not in text
     assert "parts[0]" not in text
     for cell in notebook["cells"]:
+        source = "".join(cell["source"])
+        payload = f"{cell['cell_type']}\0{source}".encode("utf-8")
+        assert cell["id"] == hashlib.sha256(payload).hexdigest()[:12]
         if cell["cell_type"] == "code":
             assert cell["execution_count"] is None
             assert cell["outputs"] == []
