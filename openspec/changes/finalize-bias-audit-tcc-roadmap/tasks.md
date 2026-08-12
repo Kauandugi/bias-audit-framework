@@ -31,7 +31,7 @@
 - [x] 4.3 Exportar schema 2.0 em diretório separado dos resultados legados.
 - [x] 4.4 Criar validador independente que recalcula os testes.
 - [x] 4.5 Executar smoke test real de quatro imagens no Colab T4.
-- [ ] 4.6 Executar as 64 imagens com o manifesto e validar 32 observações por grupo.
+- [x] 4.6 Executar as 64 imagens com o manifesto e validar 32 observações por grupo.
 - [ ] 4.7 Executar um segundo dataset sem pressupor estrutura de pastas.
 
 ## 5. Validação empírica
@@ -61,5 +61,5 @@
 ## 8. Verificação final
 
 - [x] 8.1 Validar JSON do notebook e executar testes locais.
-- [ ] 8.2 Incorporar CSVs e relatórios schema 2.0 no repositório.
+- [x] 8.2 Incorporar CSVs e relatórios schema 2.0 no repositório.
 - [ ] 8.3 Compilar o TCC e verificar consistência entre método, dados e conclusões.

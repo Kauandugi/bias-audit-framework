@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -15,15 +16,19 @@ import streamlit as st
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
+from biasauditfw.contracts import validate_contract  # noqa: E402
 from biasauditfw.statistics import (  # noqa: E402
     inference_eligibility,
     mann_whitney_reports,
+    wilcoxon_reports,
 )
 
 
 DATA_DIR = ROOT / "data"
-IMAGE_DATA = DATA_DIR / "audit_images.csv"
-FACE_DATA = DATA_DIR / "audit_faces.csv"
+SCHEMA_DATA_DIR = DATA_DIR / "schema2"
+IMAGE_DATA = SCHEMA_DATA_DIR / "audit_images.csv"
+FACE_DATA = SCHEMA_DATA_DIR / "audit_faces.csv"
+RUN_METADATA = SCHEMA_DATA_DIR / "run_metadata.json"
 LEGACY_DATA = DATA_DIR / "resultados_auditoria_tcc.csv"
 
 METRICS = {
@@ -41,7 +46,10 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame, bool]:
     """Load schema 2.0, retaining the old table only as a visual legacy."""
 
     if IMAGE_DATA.exists() and FACE_DATA.exists():
-        return pd.read_csv(IMAGE_DATA), pd.read_csv(FACE_DATA), False
+        images = pd.read_csv(IMAGE_DATA)
+        faces = pd.read_csv(FACE_DATA)
+        validate_contract(images, faces)
+        return images, faces, False
     if not LEGACY_DATA.exists():
         return pd.DataFrame(), pd.DataFrame(), False
 
@@ -62,6 +70,19 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame, bool]:
         ["imagem_id", "raca", "genero", "tipo_prompt", "modelo_ia"]
     ].dropna(subset=["raca", "genero"], how="all")
     return images, faces, True
+
+
+@st.cache_data
+def load_run_metadata() -> dict[str, object]:
+    """Load provenance for the canonical schema 2.0 execution."""
+
+    if not RUN_METADATA.exists():
+        return {}
+    with RUN_METADATA.open(encoding="utf-8") as file:
+        metadata = json.load(file)
+    if not isinstance(metadata, dict):
+        raise ValueError("run_metadata.json must contain a JSON object")
+    return metadata
 
 
 def face_category_proportions(
@@ -116,11 +137,17 @@ st.caption(
     "CLIP opera no nível da imagem; DeepFace opera no nível de cada rosto detectado."
 )
 
-images_df, faces_df, using_legacy = load_data()
+try:
+    images_df, faces_df, using_legacy = load_data()
+    run_metadata = {} if using_legacy else load_run_metadata()
+except (OSError, ValueError, json.JSONDecodeError, pd.errors.ParserError) as exc:
+    st.error(f"Falha ao validar os artefatos do dashboard: {exc}")
+    st.stop()
+
 if images_df.empty:
     st.error(
-        "Nenhum artefato foi encontrado em data/. Execute o notebook schema 2.0 "
-        "e copie audit_images.csv e audit_faces.csv."
+        "Nenhum artefato foi encontrado em data/schema2/. Execute o notebook "
+        "schema 2.0 e copie audit_images.csv e audit_faces.csv."
     )
     st.stop()
 
@@ -128,6 +155,27 @@ if using_legacy:
     st.warning(
         "O dashboard está exibindo o CSV legado. Ele serve apenas para inspeção "
         "histórica e não contém os novos escores de diversidade."
+    )
+elif run_metadata:
+    raw_timestamp = pd.to_datetime(
+        run_metadata.get("run_timestamp_utc"), errors="coerce", utc=True
+    )
+    timestamp = (
+        raw_timestamp.strftime("%Y-%m-%d %H:%M UTC")
+        if not pd.isna(raw_timestamp)
+        else "data não registrada"
+    )
+    commit = str(run_metadata.get("repository_commit", "não registrado"))[:7]
+    st.caption(
+        " | ".join(
+            [
+                f"Schema {run_metadata.get('schema_version', '2.0')}",
+                f"execução {run_metadata.get('run_mode', 'não registrada')}",
+                timestamp,
+                str(run_metadata.get("gpu_name", "GPU não registrada")),
+                f"revisão {commit}",
+            ]
+        )
     )
 
 models = sorted(images_df["modelo_ia"].dropna().astype(str).unique())
@@ -243,7 +291,28 @@ else:
                 ]
             ],
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
+        )
+
+        paired_report = wilcoxon_reports(filtered_images)
+        paired_report["dimensão"] = paired_report["metric"].map(METRICS)
+        st.subheader("Wilcoxon pareado: análise de sensibilidade")
+        st.dataframe(
+            paired_report[
+                [
+                    "dimensão",
+                    "n_pairs",
+                    "median_paired_difference",
+                    "n_inclusive_higher",
+                    "n_neutral_higher",
+                    "n_ties",
+                    "w_statistic",
+                    "p_value",
+                    "p_value_holm",
+                ]
+            ],
+            hide_index=True,
+            width="stretch",
         )
         st.info(
             "“Não se rejeita H0” indica evidência insuficiente de diferença; "
@@ -251,4 +320,3 @@ else:
         )
     else:
         st.warning(f"Inferência estatística não executada: {reason}.")
-

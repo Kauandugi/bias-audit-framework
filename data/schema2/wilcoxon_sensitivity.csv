@@ -1,0 +1,3 @@
+metric,n_pairs,median_paired_difference,n_inclusive_higher,n_neutral_higher,n_ties,w_statistic,p_value,p_value_holm
+clip_racial_diversity_margin,32,-0.0007792115211486816,15,17,0,260.0,0.9485435066744685,0.9485435066744685
+clip_gender_diversity_margin,32,-0.0008785948157310486,15,17,0,223.0,0.4540447914041579,0.9080895828083158
