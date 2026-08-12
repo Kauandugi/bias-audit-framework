@@ -48,6 +48,10 @@ As margens medem alinhamento semântico, não contagem ou proporção de pessoas
 Os outputs anteriores permanecem como legado e não devem sustentar as novas
 conclusões.
 
+Os artefatos da execução completa validada do corpus original estão em
+[`data/schema2/`](data/schema2/). O CSV anterior permanece em `data/` apenas para
+compatibilidade histórica.
+
 ## Datasets e manifesto
 
 A ingestão suporta `.png`, `.jpg`, `.jpeg`, `.webp`, `.bmp`, `.tif` e `.tiff`
@@ -137,8 +141,9 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-O Streamlit filtra as duas tabelas pelos mesmos `imagem_id`, separa KPIs de
-imagens e rostos e mostra as duas margens sem replicar CLIP por face.
+O Streamlit carrega os artefatos validados de `data/schema2/`, filtra as duas
+tabelas pelos mesmos `imagem_id`, separa KPIs de imagens e rostos e mostra as
+duas margens com Mann–Whitney e Wilcoxon sem replicar CLIP por face.
 
 ## Estrutura
 
@@ -147,6 +152,7 @@ src/biasauditfw/                               # pacote testável
 Framework_Auditoria_Viés_IA_Generativa.ipynb  # orquestrador Colab/T4
 tests/                                         # testes e validador de outputs
 data/original_64_manifest.csv                  # manifesto do corpus original
+data/schema2/                                  # outputs validados do schema 2.0
 app.py                                         # dashboard Streamlit
 Texto_Latex/                                   # texto do TCC
 openspec/                                      # especificação e tarefas

@@ -1,0 +1,19 @@
+{
+  "schema_version": "2.0",
+  "run_timestamp_utc": "2026-08-12T02:43:35.471126+00:00",
+  "dataset_id": "original-64",
+  "run_mode": "full",
+  "repository_ref": "agent/schema-2-diversity-refactor",
+  "repository_commit": "2ecaa2ccfffdbfae82714ec1642b054a133720f2",
+  "python_version": "3.12.13",
+  "torch_version": "2.11.0+cu128",
+  "transformers_version": "5.13.1",
+  "deepface_version": "0.0.100",
+  "cuda_available": true,
+  "gpu_name": "Tesla T4",
+  "clip_model_id": "openai/clip-vit-base-patch32",
+  "detector_backend": "retinaface",
+  "seed": 42,
+  "clip_scoring": "L2-normalized cosine prototype margins",
+  "manifest_path": "/content/bias-audit-framework/data/original_64_manifest.csv"
+}

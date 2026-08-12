@@ -1,0 +1,3 @@
+metric,n_inclusive,n_neutral,median_inclusive,iqr_inclusive,median_neutral,iqr_neutral,u_statistic,p_value,rank_biserial,p_value_holm,decision_holm
+clip_racial_diversity_margin,32,32,0.0011819154024124146,0.005735751241445541,0.0007693171501159668,0.006706587970256805,512.0,1.0,0.0,1.0,nao se rejeita H0
+clip_gender_diversity_margin,32,32,0.002346999943256378,0.005337432026863098,0.0036002695560455322,0.008808381855487823,442.0,0.35072332485520263,-0.13671875,0.7014466497104053,nao se rejeita H0
