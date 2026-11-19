@@ -37,7 +37,7 @@ def test_human_results_match_public_narrative() -> None:
     assert metadata["simpson_estimator"] == "unbiased_gini_simpson"
 
     assert "70 participantes" in readme
-    assert "3.360 avaliações participante--imagem" in readme
+    assert "3.360 avaliações de imagens por participantes" in readme
     assert "16.800 notas" in readme
 
     # The final narrative must use the small-sample-corrected facial index.
