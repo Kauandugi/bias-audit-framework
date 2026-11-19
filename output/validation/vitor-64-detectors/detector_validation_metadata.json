@@ -1,0 +1,19 @@
+{
+  "validation_mode": "synthetic-detector-disagreement",
+  "created_at_utc": "2026-10-15T14:51:39.268346+00:00",
+  "image_count": 64,
+  "iou_threshold": 0.5,
+  "python": "3.12.10",
+  "packages": {
+    "biasauditfw": "2.0.0",
+    "deepface": "0.0.95",
+    "mtcnn": "1.0.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3"
+  },
+  "inputs": {
+    "images_csv": "C:\\Users\\Kauandugi\\Desktop\\BiasAuditFW\\data\\schema2-vitor\\audit_images.csv",
+    "input_root": "C:\\Users\\Kauandugi\\Desktop\\BiasAuditFW\\Novo Dataset de imagens do Vitor 2\\Gera\u00e7\u00e3o de imagens",
+    "reference_role": "MTCNN is a pseudo-reference, not Ground Truth"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "validation_mode": "wider-face-benchmark",
+  "created_at_utc": "2026-10-02T02:15:12.381404+00:00",
+  "image_count": 3226,
+  "iou_threshold": 0.5,
+  "python": "3.13.15",
+  "packages": {
+    "biasauditfw": "2.0.0",
+    "deepface": "0.0.100",
+    "mtcnn": "1.0.0",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3"
+  },
+  "inputs": {
+    "annotations": "/content/wider-face/widerface/wider_face_split/wider_face_val_bbx_gt.txt",
+    "images_root": "/content/wider-face/widerface/WIDER_val/images",
+    "benchmark_role": "External benchmark consistency test; not synthetic-domain Ground Truth"
+  },
+  "ap50_tie_break": [
+    "detector_confidence_desc",
+    "imagem_id",
+    "bbox_x",
+    "bbox_y",
+    "bbox_w",
+    "bbox_h"
+  ],
+  "independent_revalidation": {
+    "validated_at_utc": "2026-10-07T02:59:37.005954+00:00",
+    "pandas": "2.3.3",
+    "status": "passed"
+  }
+}

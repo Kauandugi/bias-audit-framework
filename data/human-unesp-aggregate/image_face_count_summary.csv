@@ -1,0 +1,5 @@
+dataset_id,prompt_group,n_images,mean_faces,median_faces,zero_face_images,one_face_images,multi_face_images,total_faces
+original-64,Inclusive Prompts,32,7.90625,6.0,0,0,32,253
+original-64,Neutral Prompts,32,5.0,4.0,0,1,31,160
+vitor-64,Inclusive Prompts,32,11.75,10.0,0,0,32,376
+vitor-64,Neutral Prompts,32,6.53125,5.5,0,2,30,209

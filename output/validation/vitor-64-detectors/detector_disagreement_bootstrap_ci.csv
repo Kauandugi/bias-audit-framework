@@ -1,0 +1,5 @@
+metric,ci_2_5,ci_97_5
+exact_count_agreement_rate,0.171875,0.390625
+mean_absolute_count_difference,1.390625,2.984375
+mean_matched_iou,0.8320004235459708,0.8504607698636346
+mean_unmatched_rate,0.10435364487508562,0.16219900162350623

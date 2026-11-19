@@ -1,0 +1,33 @@
+dataset_id,prompt_group,dimension,category,count,percentage,total_classified_faces,reference_role
+original-64,Inclusive Prompts,racial,asian,69,27.272727272727273,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,racial,black,25,9.881422924901186,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,racial,indian,5,1.976284584980237,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,racial,latino hispanic,37,14.624505928853756,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,racial,middle eastern,21,8.300395256916996,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,racial,white,96,37.944664031620555,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,gender,Man,173,68.3794466403162,253,classifier prediction; not demographic truth
+original-64,Inclusive Prompts,gender,Woman,80,31.620553359683793,253,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,asian,22,13.75,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,black,20,12.5,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,indian,3,1.875,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,latino hispanic,9,5.625,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,middle eastern,9,5.625,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,racial,white,97,60.625,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,gender,Man,120,75.0,160,classifier prediction; not demographic truth
+original-64,Neutral Prompts,gender,Woman,40,25.0,160,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,asian,104,27.659574468085108,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,black,41,10.904255319148936,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,indian,20,5.319148936170213,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,latino hispanic,57,15.159574468085106,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,middle eastern,35,9.308510638297872,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,racial,white,119,31.648936170212767,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,gender,Man,261,69.41489361702128,376,classifier prediction; not demographic truth
+vitor-64,Inclusive Prompts,gender,Woman,115,30.585106382978722,376,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,asian,56,26.794258373205743,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,black,15,7.177033492822966,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,indian,17,8.133971291866029,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,latino hispanic,13,6.220095693779904,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,middle eastern,11,5.2631578947368425,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,racial,white,97,46.411483253588514,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,gender,Man,158,75.59808612440192,209,classifier prediction; not demographic truth
+vitor-64,Neutral Prompts,gender,Woman,51,24.401913875598087,209,classifier prediction; not demographic truth

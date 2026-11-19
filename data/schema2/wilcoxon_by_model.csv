@@ -1,0 +1,9 @@
+modelo_ia,metric,n_pairs,median_paired_difference,median_difference_ci_2_5,median_difference_ci_97_5,n_inclusive_higher,n_neutral_higher,n_ties,w_statistic,p_value,matched_rank_biserial,p_value_holm_family,analysis_role
+DALL-E,clip_racial_diversity_margin,8,-0.0010178089141846,-0.0033383369445801,0.0038297921419142,3,5,0,18.0,1.0,0.0,1.0,descriptive_small_n
+DALL-E,clip_gender_diversity_margin,8,-0.00012964755296705028,-0.0036219656467437,0.0020520538091658,4,4,0,16.0,0.84375,-0.1111111111111111,1.0,descriptive_small_n
+Gemini (NanoBanana),clip_racial_diversity_margin,8,-0.0031064152717590002,-0.0082899779081344,0.0019264966249465001,3,5,0,8.0,0.1953125,-0.5555555555555556,1.0,descriptive_small_n
+Gemini (NanoBanana),clip_gender_diversity_margin,8,-0.0026061609387397497,-0.0068248361349105,0.0021985471248626987,2,6,0,10.0,0.3125,-0.4444444444444444,1.0,descriptive_small_n
+Midjourney,clip_racial_diversity_margin,8,0.00261151790618895,-0.0029001981019973,0.0090398639440536,5,3,0,12.0,0.4609375,0.3333333333333333,1.0,descriptive_small_n
+Midjourney,clip_gender_diversity_margin,8,0.00256806612014765,-0.008805394172668502,0.0115630626678466,5,3,0,14.0,0.640625,0.2222222222222222,1.0,descriptive_small_n
+Whisk,clip_racial_diversity_margin,8,0.00030095875263210013,-0.0033678710460663,0.0042698979377746,4,4,0,14.0,0.640625,0.2222222222222222,1.0,descriptive_small_n
+Whisk,clip_gender_diversity_margin,8,-0.0012427717447281,-0.005650907754898101,0.0021335929632187002,4,4,0,13.0,0.546875,-0.2777777777777778,1.0,descriptive_small_n

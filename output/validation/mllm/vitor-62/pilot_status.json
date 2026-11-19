@@ -1,0 +1,35 @@
+{
+  "dataset_id": "vitor-62",
+  "executed_at_utc": "2026-10-07T03:14:27Z",
+  "sample_images": 8,
+  "sample_pairs": 4,
+  "prompt_version": "mllm-diversity-v2",
+  "gate_completed": false,
+  "usable_as_final_evidence": false,
+  "providers": {
+    "google/gemini-3.6-flash": {
+      "pointwise_successes": 5,
+      "pointwise_expected": 8,
+      "pairwise_successes": 0,
+      "pairwise_expected": 8,
+      "stopped_reason": "free-tier request quota exhausted"
+    },
+    "groq/qwen/qwen3.8-27b": {
+      "pointwise_successes": 8,
+      "pointwise_expected": 8,
+      "pairwise_successes": 5,
+      "pairwise_expected": 8,
+      "stopped_reason": "input-token rate limit exhausted before completing both orders"
+    },
+    "local-huggingface/Qwen2.5-VL-7B-Instruct": {
+      "pointwise_successes": 8,
+      "pointwise_expected": 8,
+      "pairwise_successes": 8,
+      "pairwise_expected": 8,
+      "semantic_gate_completed": true,
+      "semantic_gate_passed": false,
+      "stopped_reason": "semantic gate failed: valid pointwise scores were constant and 75% of pairwise judgments were not evaluable"
+    }
+  },
+  "interpretation": "Diagnostic checkpoint only. Qwen completed but failed the engineering semantic gate; Gemini and Groq remained incomplete because of free-tier limits. All three providers are excluded from TCC inferential results."
+}

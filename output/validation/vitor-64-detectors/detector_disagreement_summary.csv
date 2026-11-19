@@ -1,0 +1,2 @@
+n_images,exact_count_agreement_rate,mean_absolute_count_difference,mean_matched_iou,mean_unmatched_rate
+64,0.28125,2.078125,0.8413893986978531,0.13184027590104608

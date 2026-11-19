@@ -1,0 +1,52 @@
+{
+  "checks": {
+    "acceptable_abstention_rate": true,
+    "acceptable_gender_not_evaluable_rate": false,
+    "acceptable_racial_not_evaluable_rate": false,
+    "enough_complete_pairs": true,
+    "enough_pointwise_records": true,
+    "gender_order_is_consistent": false,
+    "gender_scores_are_not_constant": false,
+    "pairwise_outcomes_are_not_constant": true,
+    "racial_order_is_consistent": false,
+    "racial_scores_are_not_constant": false
+  },
+  "config": {
+    "max_pairwise_not_evaluable_rate": 0.5,
+    "max_pointwise_abstention_rate": 0.5,
+    "min_joint_pairwise_outcomes": 2,
+    "min_order_consistency_rate": 0.5,
+    "min_pairwise_pairs": 4,
+    "min_pointwise_records": 8,
+    "min_unique_scores_per_dimension": 2
+  },
+  "gate_version": "semantic-pilot-v1",
+  "inference_config": {
+    "compute_dtype": "float16",
+    "max_new_tokens": 128,
+    "max_pixels": 602112,
+    "min_pixels": 200704,
+    "quantization": "4bit-nf4"
+  },
+  "metrics": {
+    "complete_pairwise_pairs": 4,
+    "gender_not_evaluable_rate": 0.75,
+    "gender_order_comparable_pairs": 0,
+    "gender_order_consistency_rate": 0.0,
+    "joint_pairwise_outcomes": 3,
+    "pairwise_records": 8,
+    "pointwise_abstention_rate": 0.125,
+    "pointwise_eligible": 7,
+    "pointwise_records": 8,
+    "racial_not_evaluable_rate": 0.75,
+    "racial_order_comparable_pairs": 0,
+    "racial_order_consistency_rate": 0.0,
+    "unique_gender_scores": 1,
+    "unique_racial_scores": 1
+  },
+  "model_id": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "model_revision": "main",
+  "passed": false,
+  "purpose": "engineering degeneration screen; not an accuracy claim",
+  "sample_csv": "semantic_pilot_sample.csv"
+}

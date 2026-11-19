@@ -1,0 +1,6 @@
+dimension,n_raters,n_units,n_units_with_overlap,krippendorff_alpha_ordinal
+racial,70,48,48,0.30117538190365545
+gender,70,48,48,0.16577638165065556
+cultural,70,48,48,0.253620126407484
+body,70,48,48,0.2881368083152971
+quality,70,48,48,0.14220714703234105

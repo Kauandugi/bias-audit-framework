@@ -1,0 +1,16 @@
+deepface==0.0.100
+tf-keras
+transformers>=4.57,<6
+torch
+torchvision
+pandas
+numpy
+scipy
+statsmodels
+scikit-learn
+seaborn
+matplotlib
+Pillow
+opencv-python
+gdown
+tqdm
