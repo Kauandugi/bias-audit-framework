@@ -61,6 +61,17 @@ PROMPT_LABELS = {
     "neutral": "Neutra",
 }
 
+MODEL_LABELS = {
+    "OpenAI image_gen via Codex": "DALL-E",
+}
+
+
+def display_model_label(value: object) -> str:
+    """Return the public label without changing the canonical model name."""
+
+    model = str(value)
+    return MODEL_LABELS.get(model, model)
+
 
 def _legacy_image_id(value: str) -> str:
     return hashlib.sha256(value.casefold().encode("utf-8")).hexdigest()[:16]
@@ -300,7 +311,7 @@ if using_legacy:
 
 models = sorted(images_df["modelo_ia"].dropna().astype(str).unique())
 selected_models = st.sidebar.multiselect(
-    "Geradores", models, default=models
+    "Geradores", models, default=models, format_func=display_model_label
 )
 prompts = sorted(images_df["tipo_prompt"].dropna().astype(str).unique())
 selected_prompts = st.sidebar.multiselect(
@@ -426,12 +437,15 @@ with automatic_tab:
                 chart_data["tipo_prompt"] = chart_data["tipo_prompt"].map(
                     lambda value: PROMPT_LABELS.get(str(value), str(value))
                 )
+                chart_data["gerador_exibicao"] = chart_data["modelo_ia"].map(
+                    display_model_label
+                )
                 figure, axis = plt.subplots(figsize=(9, 4))
                 sns.boxplot(
                     data=chart_data,
                     x="tipo_prompt",
                     y=metric,
-                    hue="modelo_ia",
+                    hue="gerador_exibicao",
                     showmeans=True,
                     ax=axis,
                 )

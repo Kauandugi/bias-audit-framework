@@ -39,10 +39,13 @@ def test_dashboard_switches_corpus_and_recomputes_statistics() -> None:
     assert any(
         "Setenta participantes" in block.value for block in app.markdown
     )
+    assert "DALL-E" in app.multiselect[0].options
 
     app.selectbox[0].select("Replicação parcial (64 imagens)").run()
 
     assert not app.error
+    assert "DALL-E" in app.multiselect[0].options
+    assert "OpenAI image_gen via Codex" not in app.multiselect[0].options
     assert [(metric.label, metric.value) for metric in app.metric[:2]] == [
         ("Imagens", "64"),
         ("Rostos detectados", "585"),
