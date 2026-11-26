@@ -17,20 +17,22 @@ def test_dashboard_switches_corpus_and_recomputes_statistics() -> None:
     assert not app.error
     assert [(metric.label, metric.value) for metric in app.metric[:2]] == [
         ("Imagens", "64"),
-        ("Rostos", "413"),
+        ("Rostos detectados", "413"),
     ]
     assert set(app.dataframe[0].value["n_pairs"]) == {32}
-    assert any(header.value == "Referência humana perceptual" for header in app.header)
     assert any(
-        "Setenta participantes" in caption.value for caption in app.caption
+        header.value == "O que os participantes perceberam" for header in app.header
+    )
+    assert any(
+        "Setenta participantes" in block.value for block in app.markdown
     )
 
-    app.selectbox[0].select("Replicação Vitor (64 imagens)").run()
+    app.selectbox[0].select("Replicação parcial (64 imagens)").run()
 
     assert not app.error
     assert [(metric.label, metric.value) for metric in app.metric[:2]] == [
         ("Imagens", "64"),
-        ("Rostos", "585"),
+        ("Rostos detectados", "585"),
     ]
     wilcoxon = app.dataframe[0].value.set_index("dimensão")
     assert set(wilcoxon["n_pairs"]) == {32}

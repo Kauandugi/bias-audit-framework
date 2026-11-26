@@ -13,6 +13,12 @@ foi ampliado no Trabalho de Conclusão de Curso em Ciência da Computação da U
 A pergunta central é simples: pedir diversidade de forma explícita muda a
 representação presente nas imagens?
 
+A resposta encontrada foi parcial. As pessoas perceberam mais contexto
+latino-americano e mais diversidade corporal nas imagens inclusivas. Para
+diversidade racial e equilíbrio de gênero, a análise principal não encontrou
+uma diferença clara. As medidas automáticas também não acompanharam as notas
+humanas na maior parte das comparações.
+
 Para estudar essa questão, o projeto analisa dois aspectos:
 
 1. O conteúdo geral da imagem, com o modelo CLIP.
@@ -60,10 +66,13 @@ Os resultados validados do primeiro conjunto estão em
 ## Execução local
 
 O projeto requer Python 3.12. O gerenciador `uv` é recomendado porque instala as
-versões registradas no arquivo de dependências.
+versões registradas no arquivo de dependências. Para baixar o código e preparar
+o ambiente:
 
 ```bash
-uv sync --python 3.12 --extra test
+git clone https://github.com/Kauandugi/bias-audit-framework.git
+cd bias-audit-framework
+uv sync --python 3.12 --extra test --extra dashboard
 uv run python -m pytest -q tests -m "not gpu"
 ```
 
@@ -102,8 +111,7 @@ O dashboard apresenta as medidas por imagem e por rosto. Ele também mostra os
 resultados humanos agregados quando os metadados permitem esse uso.
 
 ```bash
-python -m pip install -r requirements.txt
-streamlit run app.py
+uv run --python 3.12 --extra dashboard streamlit run app.py
 ```
 
 ## Testes e validação
