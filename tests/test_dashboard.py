@@ -1,11 +1,24 @@
 from __future__ import annotations
 
 from pathlib import Path
+import tomllib
 
 import pytest
 
 
 streamlit = pytest.importorskip("streamlit")
+
+
+def test_streamlit_cloud_dependencies_are_core_dependencies() -> None:
+    pyproject_path = Path(__file__).parents[1] / "pyproject.toml"
+    with pyproject_path.open("rb") as file:
+        pyproject = tomllib.load(file)
+
+    dependencies = pyproject["project"]["dependencies"]
+    for package in ("matplotlib", "seaborn", "streamlit"):
+        assert any(
+            dependency.lower().startswith(package) for dependency in dependencies
+        ), f"{package} must be installed by the default Streamlit Cloud environment"
 
 
 def test_dashboard_switches_corpus_and_recomputes_statistics() -> None:

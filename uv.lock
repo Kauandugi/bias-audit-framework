@@ -149,20 +149,18 @@ version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "krippendorff" },
+    { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pillow" },
     { name = "scikit-learn" },
     { name = "scipy" },
+    { name = "seaborn" },
     { name = "statsmodels" },
+    { name = "streamlit" },
 ]
 
 [package.optional-dependencies]
-dashboard = [
-    { name = "matplotlib" },
-    { name = "seaborn" },
-    { name = "streamlit" },
-]
 forms = [
     { name = "openpyxl" },
 ]
@@ -199,7 +197,7 @@ requires-dist = [
     { name = "google-genai", marker = "extra == 'judges'", specifier = ">=1.0,<2" },
     { name = "groq", marker = "extra == 'judges'", specifier = ">=0.31,<1" },
     { name = "krippendorff", specifier = ">=0.8,<1" },
-    { name = "matplotlib", marker = "extra == 'dashboard'", specifier = ">=3.8,<4" },
+    { name = "matplotlib", specifier = ">=3.8,<4" },
     { name = "nbformat", marker = "extra == 'test'", specifier = ">=5,<6" },
     { name = "numpy", specifier = ">=1.26,<3" },
     { name = "opencv-python", marker = "extra == 'neural'" },
@@ -211,9 +209,9 @@ requires-dist = [
     { name = "qwen-vl-utils", marker = "extra == 'judges'", specifier = ">=0.0.14,<1" },
     { name = "scikit-learn", specifier = ">=1.4,<2" },
     { name = "scipy", specifier = ">=1.13,<2" },
-    { name = "seaborn", marker = "extra == 'dashboard'", specifier = ">=0.13,<1" },
+    { name = "seaborn", specifier = ">=0.13,<1" },
     { name = "statsmodels", specifier = ">=0.14,<1" },
-    { name = "streamlit", marker = "extra == 'dashboard'", specifier = ">=1.40,<2" },
+    { name = "streamlit", specifier = ">=1.40,<2" },
     { name = "tf-keras", marker = "extra == 'neural'" },
     { name = "torch", marker = "extra == 'neural'" },
     { name = "torch", marker = "extra == 'test'" },
